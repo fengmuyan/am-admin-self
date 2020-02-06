@@ -1,12 +1,21 @@
 <template>
   <div class="app-container">
     <el-collapse-transition>
-      <div class="form-p">
-        <el-form :model="queryForm" ref="queryForm" :inline="true">
-          <el-form-item label="商户号" prop="mercode">
+      <div class="form-p" v-show="formShow">
+        <el-form :model="queryForm" ref="queryForm" :inline="true" label-width="70px">
+          <el-form-item label="供应商" prop="mername">
             <el-input
-              v-model="queryForm.mercode"
-              placeholder="请输入商户号"
+              v-model="queryForm.mername"
+              placeholder="请输入供应商名称"
+              clearable
+              size="small"
+              style="width: 240px"
+            />
+          </el-form-item>
+          <el-form-item label="采购商" prop="username">
+            <el-input
+              v-model="queryForm.username"
+              placeholder="请输入采购商名称"
               clearable
               size="small"
               style="width: 240px"
@@ -102,29 +111,52 @@
         <el-tab-pane label="已关闭" name="5"></el-tab-pane>
         <el-tab-pane label="已失效" name="6"></el-tab-pane>
       </el-tabs>
+      <el-row :gutter="10" class="export-btn icon-wrap">
+        <el-col :span="1.5">
+          <div class="icon-box icon-box-f" @click="formShow = !formShow">
+            <i class="el-icon-zoom-in" v-show="!formShow"></i>
+            <i class="el-icon-zoom-out" v-show="formShow"></i>
+          </div>
+        </el-col>
+        <el-col :span="1.5">
+          <div class="icon-box icon-box-t" @click="handleQuery">
+            <i class="el-icon-refresh"></i>
+          </div>
+        </el-col>
+        <el-button
+          type="primary"
+          icon="el-icon-download"
+          size="mini"
+          :loading="exportLoading"
+          @click="handleExport"
+          style="margin-left:10px"
+        >导出数据</el-button>
+      </el-row>
       <el-table style="width: 100%" v-loading="loading" :data="orderList">
-        <el-table-column label="订单号" prop="orderno" width="200" />
-        <el-table-column label="创建时间" sortable prop="createtime" width="160" />
+        <el-table-column label="订单号" prop="orderno" width="150" show-overflow-tooltip />
+        <el-table-column label="创建时间" sortable prop="createtime" width="150" />
         <el-table-column label="订单金额" sortable prop="orderamount" width="130" />
-        <el-table-column label="用户编号" prop="usercode" />
-        <el-table-column label="应收款" prop="needprice" />
-        <el-table-column label="实收款" prop="realprice" />
-        <el-table-column label="发货类型" prop="delivertype">
+        <el-table-column label="供应商" prop="mername" show-overflow-tooltip />
+        <el-table-column label="采购商" prop="username" show-overflow-tooltip />
+        <el-table-column label="数量" prop="cmdtcount" width="60" />
+        <el-table-column label="应收款" prop="needprice" width="70" />
+        <el-table-column label="实收款" prop="realprice" width="70" />
+        <el-table-column label="发货类型" prop="delivertype" width="70">
           <template slot-scope="scope">{{scope.row.delivertype | inDelivertype }}</template>
         </el-table-column>
-        <el-table-column label="发票类型" prop="invocetype">
+        <el-table-column label="发票类型" prop="invocetype" width="70">
           <template slot-scope="scope">{{scope.row.invocetype | initInvocetype }}</template>
         </el-table-column>
-        <el-table-column label="支付状态" prop="paystate">
+        <el-table-column label="订单状态" prop="orderstate" width="80">
+          <template slot-scope="scope">{{scope.row.orderstate | initOrderstate }}</template>
+        </el-table-column>
+        <el-table-column label="支付类型" prop="paystate" width="90">
           <template slot-scope="scope">{{scope.row.paystate | initPaystate }}</template>
         </el-table-column>
-        <el-table-column label="订单状态" prop="orderstate">
-          <template slot-scope="scope">{{scope.row.orderstate | initOrderstate}}</template>
-        </el-table-column>
-        <el-table-column label="交易状态" prop="tradestate" width="150">
+        <el-table-column label="交易状态" prop="tradestate" width="120">
           <template slot-scope="scope">{{scope.row.tradestate | initTradestate}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="180">
+        <el-table-column label="操作" width="80">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -146,11 +178,12 @@
   </div>
 </template>
 <script>
-import { getOrderList, orderToSent } from "@/api/order";
+import { getOrderList, orderExport, orderToSent } from "@/api/order";
 export default {
   data() {
     return {
       loading: false,
+      formShow: true,
       activeName: "-1",
       orderList: [],
       total: 0,
@@ -158,7 +191,8 @@ export default {
       queryForm: {
         pageNum: 1,
         pageSize: 10,
-        mercode: undefined,
+        mername: undefined,
+        username: undefined,
         tradestate: undefined,
         orderno: undefined,
         paytype: undefined,
@@ -247,6 +281,27 @@ export default {
     handleClick() {
       this.queryForm.pageNum = 1;
       this.getList();
+    },
+    handleExport() {
+      const { _initParams, queryForm } = this;
+      this.$confirm("是否确认导出所有订单数据项?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        customClass: "el-message-box-wran"
+      })
+        .then(async () => {
+          this.exportLoading = true;
+          const { msg, code } = await orderExport(_initParams(queryForm));
+          if (code === 200) {
+            this.download(msg);
+            this.msgSuccess("导出成功");
+            this.exportLoading = false;
+          } else {
+            this.exportLoading = false;
+          }
+        })
+        .catch(function() {});
     },
     _initParams(obj) {
       const { dateRange, activeName } = this;

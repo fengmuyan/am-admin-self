@@ -19,7 +19,7 @@ export default {
     },
     height: {
       type: String,
-      default: "300px"
+      default: "290px"
     },
     itemData: {
       type: Array,
@@ -56,7 +56,7 @@ export default {
         },
         legend: {
           left: "center",
-          bottom: "30",
+          bottom: "15",
           data: ["已使用额度", "未使用额度"]
         },
         series: [
@@ -64,7 +64,7 @@ export default {
             name: "使用情况",
             type: "pie",
             radius: [15, 85],
-            center: ["50%", "40%"],
+            center: ["50%", "48%"],
             data: this.itemData,
             itemStyle: {
               emphasis: {

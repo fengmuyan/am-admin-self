@@ -10,7 +10,8 @@ const user = {
     isReal: '',
     isOpenAccount: '',
     userNumber: '',
-    permissions: []
+    permissions: [],
+    tipAppeared: false
   },
 
   mutations: {
@@ -37,7 +38,10 @@ const user = {
     },
     SET_NUMBER: (state, number) => {
       state.userNumber = number
-    }
+    },
+    TOGGLE_TIP: (state, bool) => {
+      state.tipAppeared = bool
+    },
   },
 
   actions: {
@@ -104,7 +108,14 @@ const user = {
         removeToken()
         resolve()
       })
-    }
+    },
+
+    toggleTip({ commit }, bool) {
+      return new Promise(resolve => {
+        commit('TOGGLE_TIP', bool)
+        resolve()
+      })
+    },
   }
 }
 

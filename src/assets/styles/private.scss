@@ -63,6 +63,7 @@
       border-color: $light-blue;
       color: $light-blue;
       margin-right: 65px;
+      margin-left: 8px;
     }
     .el-button--primary{
       background-color: $light-blue;
@@ -124,8 +125,22 @@
   background: #fff;
   border-radius: 6px;
   box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+  position: relative;
+  .el-button{
+    margin-left: 0;
+  }
+  .el-button--mini {
+    padding: 7px 5px;
+  }
+  .export-btn{
+    margin: 0 !important;
+    width: 170px !important;
+    position: absolute;
+    right: 26px;
+    top: 13px;
+  }
   .el-tabs{
-    padding: 0 20px;
+    padding: 0 15px;
     .el-tabs__header{
       margin-bottom: 22px;
     }
@@ -135,9 +150,6 @@
     .el-tabs__active-bar{
       height: 3px;
     }
-  }
-  .el-button--mini {
-    padding: 7px 8px;
   }
   .icon-wrap {
     padding-right: 5px;
@@ -186,6 +198,10 @@
     text-align: center;
     padding: 8px 0;
     cursor: pointer;
+    .cell{
+      padding-left: 3px;
+      padding-right: 3px;
+    }
   }
   .el-table__header {
     th {
@@ -211,11 +227,20 @@
     text-align: right;
     margin-top: 20px;
   }
-  .img-box {
+  .total-wrap{
     display: flex;
     flex-direction: row;
+    justify-content: space-between;
     align-items: center;
-    justify-content: center;
+    .total-data{
+      padding-left: 20px;
+      line-height: 50px;
+      color: #606266;
+      span{
+        font-size: 20px;
+        color: red;
+      }
+    }
   }
 }
 

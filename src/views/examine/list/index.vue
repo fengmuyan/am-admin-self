@@ -40,7 +40,8 @@
       <el-row :gutter="10" class="mb10 f-r icon-wrap">
         <el-col :span="1.5">
           <div class="icon-box icon-box-f" @click="formShow = !formShow">
-            <i class="el-icon-zoom-in"></i>
+            <i class="el-icon-zoom-in" v-show="!formShow"></i>
+            <i class="el-icon-zoom-out" v-show="formShow"></i>
           </div>
         </el-col>
         <el-col :span="1.5">
@@ -53,13 +54,13 @@
         <el-table-column label="用户编号" prop="usercode" />
         <el-table-column label="用户账号" prop="useraccount" />
         <el-table-column label="注册类型" prop="voRegistertype" />
-        <el-table-column label="用户类型" prop="voUsertype" />
+        <el-table-column label="用户类型" prop="voUsertype" width="100px"/>
         <el-table-column label="手机号" prop="phone" />
-        <el-table-column label="创建时间" prop="voCreatetime" />
-        <el-table-column label="审核状态" prop="state">
+        <el-table-column label="创建时间" prop="voCreatetime" width="150px"/>
+        <el-table-column label="审核状态" prop="state" width="100px">
           <template slot-scope="scope">{{scope.row.state | initState }}</template>
         </el-table-column>
-        <el-table-column label="操作">
+        <el-table-column label="操作" width="100px">
           <template slot-scope="scope">
             <el-button size="mini" type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">查看</el-button>
           </template>

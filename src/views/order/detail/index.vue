@@ -101,7 +101,7 @@
               </div>
               <div class="content">
                 <h4>{{scope.row.title}}</h4>
-                <p>{{scope.row.standards}}</p>
+                <p>{{scope.row.standards.substring(0,scope.row.standards.length-1)}}。</p>
               </div>
             </template>
           </el-table-column>
@@ -161,7 +161,7 @@
             </p>
             <p>
               <b>运费（快递）：</b>
-              <span>+￥{{carriage}}</span>
+              <span>￥{{carriage}}</span>
             </p>
             <p>
               <b>应付总价：</b>

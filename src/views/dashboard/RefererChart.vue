@@ -19,7 +19,7 @@ export default {
     },
     height: {
       type: String,
-      default: "300px"
+      default: "290px"
     },
     itemData: {
       type: Array,
@@ -58,14 +58,22 @@ export default {
         legend: {
           orient: "vertical",
           left: "left",
-          data: ["待称重", "待付款", "待发货", "已发货", "已完成", "已关闭"]
+          data: [
+            "待称重",
+            "待付款",
+            "待发货",
+            "已发货",
+            "已完成",
+            "已关闭",
+            "已失效"
+          ]
         },
         series: [
           {
             name: "订单状态",
             type: "pie",
-            radius: "55%",
-            center: ["50%", "60%"],
+            radius: [10, 75],
+            center: ["58%", "57%"],
             data: this.itemData,
             itemStyle: {
               emphasis: {

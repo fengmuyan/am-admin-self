@@ -28,10 +28,11 @@
       <div class="card-panel card-panel04" @click="handleSetLineChartData('topLast')">
         <div class="card-panel-description">
           <div class="card-panel-text">资金付款</div>
-          <el-popover popper-class="popover-p" placement="bottom-start" title="付款明细" width="200" trigger="hover">
+          <el-popover popper-class="popover-p" placement="bottom-start" width="200" trigger="hover">
             <div class="popover-content">
-              <p>订单付款金额：<span>{{itemData[4]}}</span> 。</p>
-              <p>还款金额：<span>{{itemData[5]}}</span> 。</p>
+              <p>订单付款金额：<span>{{itemData[4]}}</span></p>
+              <p>还款金额：<span>{{itemData[5]}}</span></p>
+              <p class="total">合计：<span>{{itemData[3]}}</span></p>
             </div>
             <count-to
               slot="reference"

@@ -45,7 +45,8 @@
       <el-row :gutter="10" class="mb10 f-r icon-wrap">
         <el-col :span="1.5">
           <div class="icon-box icon-box-f" @click="formShow = !formShow">
-            <i class="el-icon-zoom-in"></i>
+            <i class="el-icon-zoom-in" v-show="!formShow"></i>
+            <i class="el-icon-zoom-out" v-show="formShow"></i>
           </div>
         </el-col>
         <el-col :span="1.5">
@@ -55,7 +56,7 @@
         </el-col>
       </el-row>
       <el-table style="width: 100%" v-loading="loading" :data="bannerList">
-        <el-table-column label="图片信息" prop="usercode" width="200">
+        <el-table-column label="图片信息" prop="usercode" width="150px">
           <template slot-scope="scope">
             <div class="demo-image__preview img-box">
               <el-image
@@ -66,17 +67,17 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="类型" prop="type">
+        <el-table-column label="类型" prop="type" width="100px">
           <template slot-scope="scope">{{scope.row.type|initType}}</template>
         </el-table-column>
-        <el-table-column label="允许登陆" prop="accept">
+        <el-table-column label="允许登陆" prop="accept" width="120px">
           <template slot-scope="scope">{{scope.row.accept|initAccept}}</template>
         </el-table-column>
-        <el-table-column label="对应编号" prop="data" />
+        <el-table-column label="对应编号" prop="data" width="120px"/>
         <el-table-column label="连接地址" prop="hyperlink" />
-        <el-table-column label="创建日期" prop="createtime" />
-        <el-table-column label="排序" prop="serial" />
-        <el-table-column label="操作">
+        <el-table-column label="创建日期" prop="createtime" width="150px"/>
+        <el-table-column label="排序" prop="serial" width="80px"/>
+        <el-table-column label="操作" width="160px">
           <template slot-scope="scope">
             <el-button size="mini" type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
             <el-button
@@ -153,8 +154,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button :loading="loadingForm" type="primary" @click="submitForm('form')">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
+        <el-button :loading="loadingForm" type="primary" @click="submitForm('form')">确 定</el-button>
       </div>
     </el-dialog>
   </div>

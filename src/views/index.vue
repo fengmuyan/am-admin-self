@@ -1,5 +1,5 @@
 <template>
-  <div class="dashboard-editor-container" v-loading="loading">
+  <div class="dashboard-editor-container" v-loading="loading" v-if="isShow">
     <panel-group :itemData="topPanelData" @handleSetLineChartData="handleSetLineChartData" />
     <el-row class="line-box">
       <line-chart :chart-data="lineChartData" />
@@ -31,6 +31,7 @@ import PieChart from "./dashboard/PieChart";
 import PieChart2 from "./dashboard/PieChart2";
 import RefererChart from "./dashboard/RefererChart";
 
+import { mapState } from "vuex";
 import { getHomePageData } from "@/api/index";
 
 export default {
@@ -45,6 +46,7 @@ export default {
   data() {
     return {
       loading: false,
+      isShow: false,
       activeItem: "topFir",
       lineChartDataAll: {
         topFir: {
@@ -75,7 +77,8 @@ export default {
         { value: 0, name: "待发货", tradestate: 1 },
         { value: 0, name: "已发货", tradestate: 2 },
         { value: 0, name: "已完成", tradestate: 4 },
-        { value: 0, name: "已关闭", tradestate: 5 }
+        { value: 0, name: "已关闭", tradestate: 5 },
+        { value: 0, name: "已失效", tradestate: 6 }
       ],
       botRightData: [
         { value: 0, name: "已使用额度" },
@@ -89,12 +92,24 @@ export default {
   },
 
   computed: {
+    ...mapState({
+      isReal: state => state.user.isReal,
+      isOpenAccount: state => state.user.isOpenAccount
+    }),
     lineChartData() {
       return this.lineChartDataAll[this.activeItem];
     }
   },
 
-  created() {},
+  created() {
+    const isReal = Number(this.isReal);
+    const isOpenAccount = this.isOpenAccount;
+    if (isReal === 3 && isOpenAccount === true) {
+      this.getData();
+    } else {
+      this.isShow = true;
+    }
+  },
   methods: {
     async getData() {
       try {
@@ -174,7 +189,7 @@ export default {
         "",
         "已完成",
         "已关闭",
-        "",
+        "已失效",
         "",
         "",
         "",
@@ -189,20 +204,21 @@ export default {
 <style lang="scss" scoped>
 .dashboard-editor-container {
   padding: 25px 40px;
+  padding-top: 15px;
   background-color: rgb(240, 242, 245);
   position: relative;
 
   .chart-wrapper {
     background: #fff;
     padding: 16px 16px 0;
-    margin-bottom: 32px;
+    margin-bottom: 25px;
     border-radius: 8px;
     box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
   }
   .line-box {
     background: #fff;
     padding: 16px 16px 0;
-    margin-bottom: 32px;
+    margin-bottom: 25px;
     border-radius: 8px;
     box-shadow: 4px 4px 40px rgba(0, 0, 0, 0.05);
   }

@@ -19,7 +19,7 @@ export default {
     },
     height: {
       type: String,
-      default: "300px"
+      default: "290px"
     },
     itemData: {
       type: Array,
@@ -56,15 +56,15 @@ export default {
         },
         legend: {
           left: "center",
-          bottom: "30",
+          bottom: "15",
           data: ["信用额度付款", "资金付款"]
         },
         series: [
           {
-            name: "订单状态",
+            name: "占比情况",
             type: "pie",
             radius: [15, 85],
-            center: ["50%", "40%"],
+            center: ["50%", "48%"],
             data: this.itemData,
             itemStyle: {
               emphasis: {

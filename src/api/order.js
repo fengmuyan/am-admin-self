@@ -17,3 +17,12 @@ export function getOrderDetail(data) {
     data
   })
 }
+
+//订单列表导出数据
+export function orderExport(data) {
+  return request({
+    url: '/god/order/export',
+    method: 'post',
+    data
+  })
+}
