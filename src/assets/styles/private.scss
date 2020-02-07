@@ -244,6 +244,15 @@
   }
 }
 
+.table-push {
+  td,th{
+    padding: 0px 0;
+  }
+  .el-table__header-wrapper th {
+    height: 30px;
+  }
+}
+
 .form-p {
   padding: 12px;
   padding-bottom: 5px;

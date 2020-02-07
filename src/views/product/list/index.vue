@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-collapse-transition>
-      <div class="form-p" v-show="formShow">
+      <div class="form-p" v-if="formShow">
         <el-form :model="queryForm" ref="queryForm" :inline="true">
           <el-form-item label="商品名称" prop="mercode">
             <el-input

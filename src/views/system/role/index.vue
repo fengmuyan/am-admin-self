@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-collapse-transition>
-      <div class="form-p" v-show="formShow">
+      <div class="form-p" v-if="formShow">
         <el-form :model="queryParams" ref="queryForm" :inline="true">
           <el-form-item label="角色名称" prop="roleName">
             <el-input

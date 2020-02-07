@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-collapse-transition>
-      <div class="form-p" v-show="formShow">
+      <div class="form-p" v-if="formShow" ref="formPublic">
         <el-form :model="queryForm" ref="queryForm" :inline="true">
           <el-form-item label="banner分类" prop="type">
             <el-select
@@ -36,7 +36,7 @@
         </el-form>
       </div>
     </el-collapse-transition>
-    <div class="table-p">
+    <div class="table-p" :style="{ 'min-height': minHeight }">
       <el-row :gutter="10" class="mb10 f-l">
         <el-col :span="1.5">
           <el-button type="primary" icon="el-icon-plus" size="mini" @click="addBanner">新增</el-button>
@@ -46,7 +46,7 @@
         <el-col :span="1.5">
           <div class="icon-box icon-box-f" @click="formShow = !formShow">
             <i class="el-icon-zoom-in" v-show="!formShow"></i>
-            <i class="el-icon-zoom-out" v-show="formShow"></i>
+            <i class="el-icon-zoom-out" v-if="formShow"></i>
           </div>
         </el-col>
         <el-col :span="1.5">
@@ -163,7 +163,9 @@
 <script>
 import { getBannerList, delBanner, saveAdvert } from "@/api/banner";
 import UploadImg from "@/components/UploadImg";
+import minHeightMix from '@/mixins/minHeight'
 export default {
+  mixins: [minHeightMix],
   components: {
     UploadImg
   },
@@ -347,7 +349,6 @@ export default {
       await this.$nextTick();
       this.open = true;
       this.imgShow = true;
-
     },
 
     submitForm(formName) {

@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-collapse-transition>
-      <div class="form-p" v-show="formShow">
+      <div class="form-p" v-if="formShow" ref="formPublic">
         <el-form :model="queryForm" ref="queryForm" :inline="true" label-width="70px">
           <el-form-item label="供应商" prop="mername">
             <el-input
@@ -100,7 +100,7 @@
       </div>
     </el-collapse-transition>
 
-    <div class="table-p">
+    <div class="table-p" :style="{ 'min-height': minHeight }">
       <el-tabs v-model="activeName" @tab-click="handleClick">
         <el-tab-pane label="全部订单" name="-1"></el-tab-pane>
         <el-tab-pane label="待称重" name="10"></el-tab-pane>
@@ -115,7 +115,7 @@
         <el-col :span="1.5">
           <div class="icon-box icon-box-f" @click="formShow = !formShow">
             <i class="el-icon-zoom-in" v-show="!formShow"></i>
-            <i class="el-icon-zoom-out" v-show="formShow"></i>
+            <i class="el-icon-zoom-out" v-if="formShow"></i>
           </div>
         </el-col>
         <el-col :span="1.5">
@@ -179,7 +179,9 @@
 </template>
 <script>
 import { getOrderList, orderExport, orderToSent } from "@/api/order";
+import minHeightMix from '@/mixins/minHeight'
 export default {
+  mixins: [minHeightMix],
   data() {
     return {
       loading: false,
