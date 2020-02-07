@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-collapse-transition>
-      <div class="form-p" v-if="formShow" ref="formPublic">
+      <div class="form-p" v-if="formShow" ref="formPublic" v-resize="resize">
         <el-form :model="queryForm" ref="queryForm" :inline="true" label-width="75px">
           <el-form-item label="消息标题" prop="title">
             <el-select
@@ -39,7 +39,6 @@
       </el-row>
       <el-table style="width: 100%" v-loading="loading" :data="messageDetailList">
         <el-table-column label="推送消息编号" prop="detailid" show-overflow-tooltip />
-        <el-table-column label="用户编号" prop="usercode" show-overflow-tooltip />
         <el-table-column label="扩展字段" prop="extras" show-overflow-tooltip />
         <el-table-column label="手机号" prop="phone" width="120px" />
         <el-table-column label="是否已读" prop="isread" width="70px">
@@ -74,47 +73,6 @@ export default {
         pageSize: 10,
         isread: "N"
       },
-      form: {
-        guid: undefined,
-        icon: null,
-        subject: undefined,
-        title: undefined,
-        url: "",
-        level: "0",
-        actioncode: "100701",
-        platform: "all",
-        messagetype: "0",
-        fromtype: "1",
-        isdisplay: "Y",
-        content: undefined
-      },
-      rules: {
-        icon: [
-          { required: true, message: "上传图标不能为空", trigger: "blur" }
-        ],
-        subject: [
-          { required: true, message: "请输入分类主题", trigger: "blur" }
-        ],
-        title: [{ required: true, message: "请输入消息标题", trigger: "blur" }],
-        content: [
-          { required: true, message: "请输入消息内容", trigger: "blur" }
-        ],
-        level: [
-          { required: true, message: "请选择消息级别", trigger: "change" }
-        ],
-        platform: [
-          { required: true, message: "请选择推送平台", trigger: "change" }
-        ],
-        messagetype: [
-          { required: true, message: "请选择消息类型", trigger: "change" }
-        ],
-        fromtype: [
-          { required: true, message: "请选择消息来源", trigger: "change" }
-        ],
-        isdisplay: [
-          { required: true, message: "请选择是否列表展示", trigger: "change" }
-        ]
-      }
     };
   },
   filters: {
@@ -159,6 +117,7 @@ export default {
     },
     resetQuery() {
       this.dateRange = [];
+      this.queryForm.isread = "N";
       this.resetForm("queryForm");
       this.handleQuery();
     }

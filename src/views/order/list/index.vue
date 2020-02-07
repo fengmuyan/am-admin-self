@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-collapse-transition>
-      <div class="form-p" v-if="formShow" ref="formPublic">
+      <div class="form-p" v-if="formShow" ref="formPublic" v-resize="resize">
         <el-form :model="queryForm" ref="queryForm" :inline="true" label-width="70px">
           <el-form-item label="供应商" prop="mername">
             <el-input

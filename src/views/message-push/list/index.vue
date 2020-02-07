@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-collapse-transition>
-      <div class="form-p" v-if="formShow" ref="formPublic">
+      <div class="form-p" v-show="formShow" ref="formPublic" v-resize="resize">
         <el-form :model="queryForm" ref="queryForm" :inline="true" label-width="75px">
           <el-form-item label="消息标题" prop="title">
             <el-input
@@ -48,7 +48,7 @@
               <el-option label="已推送" value="1" />
             </el-select>
           </el-form-item>
-          <el-form-item label="推送时间">
+          <el-form-item label="创建时间">
             <el-date-picker
               v-model="dateRange"
               size="small"
@@ -223,7 +223,7 @@
     <el-dialog title="消息推送" :visible.sync="openPush" width="600px">
       <div class="table-p table-push" style="min-height:400px">
         <el-table style="width: 100%" :data="userList">
-          <el-table-column label="序号" prop="id" show-overflow-tooltip />
+          <el-table-column label="标识" prop="id" show-overflow-tooltip />
           <el-table-column label="用户手机号" prop="phone" show-overflow-tooltip />
           <el-table-column label="操作">
             <template slot-scope="scope">

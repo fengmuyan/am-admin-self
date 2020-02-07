@@ -8,6 +8,7 @@ import store from './store'
 import router from './router'
 import permission from './directive/permission'
 import throttle from './directive/throttle'
+import resize from './directive/resize'
 
 import './assets/icons'
 import './permission'
@@ -41,6 +42,7 @@ Vue.component('Pagination', Pagination)
 
 Vue.use(permission)
 Vue.use(throttle)
+Vue.use(resize)
 
 Vue.config.productionTip = false
 

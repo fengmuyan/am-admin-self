@@ -21,6 +21,11 @@ const mixin = {
   mounted() {
     this.isMounted = true;
   },
+  methods: {
+    resize() {
+      this.elementHeight = '60px'
+    }
+  }
 }
 
 export default mixin

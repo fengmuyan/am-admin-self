@@ -1,7 +1,7 @@
 <template>
   <div class="app-container">
     <el-collapse-transition>
-      <div class="form-p" v-if="formShow" ref="formPublic">
+      <div class="form-p" v-if="formShow" ref="formPublic" v-resize="resize">
         <el-form :model="queryForm" ref="queryForm" :inline="true">
           <el-form-item label="banner分类" prop="type">
             <el-select
