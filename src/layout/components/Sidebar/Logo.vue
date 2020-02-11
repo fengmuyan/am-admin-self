@@ -28,7 +28,7 @@ export default {
   },
   data() {
     return {
-      title: "平台管理后台",
+      title: "商城管理平台",
       logo: require('@/assets/image/logo.png')
     };
   }

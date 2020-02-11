@@ -9,7 +9,7 @@
               placeholder="请选择"
               clearable
               size="small"
-              style="width: 180px"
+              style="width: 220px"
             >
               <el-option label="已读" value="Y" />
               <el-option label="未读" value="N" />
@@ -39,13 +39,13 @@
       </el-row>
       <el-table style="width: 100%" v-loading="loading" :data="messageDetailList">
         <el-table-column label="推送消息编号" prop="detailid" show-overflow-tooltip />
-        <el-table-column label="扩展字段" prop="extras" show-overflow-tooltip />
-        <el-table-column label="手机号" prop="phone" width="120px" />
-        <el-table-column label="是否已读" prop="isread" width="70px">
+        <el-table-column label="手机号" prop="phone" />
+        <el-table-column label="是否已读" prop="isread" >
           <template slot-scope="scope">{{scope.row.isread | initIsread}}</template>
         </el-table-column>
-        <el-table-column label="创建时间" prop="createtime" width="150px" />
-        <el-table-column label="最后读取时间" prop="readtime" width="150px" />
+        <el-table-column label="读取次数" prop="readtimes" />
+        <el-table-column label="创建时间" prop="createtime" />
+        <el-table-column label="最后读取时间" prop="readtime" />
       </el-table>
       <pagination
         v-show="total>0"
@@ -71,7 +71,7 @@ export default {
       queryForm: {
         pageNum: 1,
         pageSize: 10,
-        isread: "N"
+        isread: ""
       },
     };
   },
@@ -117,7 +117,7 @@ export default {
     },
     resetQuery() {
       this.dateRange = [];
-      this.queryForm.isread = "N";
+      this.queryForm.isread = "";
       this.resetForm("queryForm");
       this.handleQuery();
     }

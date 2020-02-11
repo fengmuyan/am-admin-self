@@ -40,7 +40,7 @@
             <li class="line">
               <div class="imgLine gryLine"></div>
             </li>
-            <li>
+            <li class="lang-item">
               <div :class="['imgIcon', 'imgIcon4',ac4?'imgIcon4-ac':'']"></div>
               <p :class="['iconTitle',ac4?'active':'']">买家确认收货</p>
               <p class="date" v-if="ac4">{{receivetime}}</p>
@@ -101,7 +101,7 @@
               </div>
               <div class="content">
                 <h4>{{scope.row.title}}</h4>
-                <p>{{scope.row.standards.substring(0,scope.row.standards.length-1)}}。</p>
+                <p><span class="agent-pro" v-if="scope.row.isagent==='Y'">代卖商品，</span>{{scope.row.standards.substring(0,scope.row.standards.length-1)}}。</p>
               </div>
             </template>
           </el-table-column>
@@ -110,7 +110,7 @@
           <el-table-column label="优惠" prop="couponprice" />
           <el-table-column label="折扣" prop="discount" />
           <el-table-column label="总价" prop="cmdttotalprice" />
-          <el-table-column label="状态" width="250px">
+          <el-table-column label="状态" width="200px">
             <template slot-scope="scope">
               <div class="weight-box">
                 <span>{{scope.row.tradestate | initTradestate}}</span>

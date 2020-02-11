@@ -98,7 +98,7 @@
       />
     </div>
     <!-- 添加或修改banner对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="600px">
+    <el-dialog :title="title" :visible.sync="open" @close="clearValidate" width="600px">
       <el-form ref="form" :model="form" :rules="rules" label-width="100px" class="mtb-15">
         <el-form-item label="图片上传" prop="imageurl" ref="uploadElement" v-if="imgShow">
           <upload-img
@@ -295,6 +295,10 @@ export default {
 
     cancel() {
       this.open = false;
+    },
+
+    clearValidate(){
+      this.$refs.form.resetFields();
     },
 
     handleDel(item) {

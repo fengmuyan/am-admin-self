@@ -572,7 +572,7 @@
       height: 260px;
       background-color: #fff;
       .statusLeft {
-        width: 380px;;
+        width: 380px;
         height: 100%;
         float: left;
         border-right: 1px solid #ececec;
@@ -597,6 +597,15 @@
           line-height: 50px;
           font-size: 15px;
           padding-left: 24px;
+        }
+        @media screen and (max-width: 1700px) {
+          width: 350px;
+        }
+        @media screen and (max-width: 1500px) {
+          width: 320px;
+          h3{
+            font-size: 28px;
+          }
         }
       }
       .statusRight {
@@ -680,6 +689,21 @@
             background-image: url(../image/line2.png);
           }
         }
+        li.lang-item{
+          width: 90px;
+        } 
+        @media screen and (max-width: 1700px) {
+          padding-left: 50px;
+          li.line {
+            width: 80px;
+          }
+        }
+        @media screen and (max-width: 1500px) {
+          padding-left: 30px;
+          li.line {
+            width: 60px;
+          }
+        }
       }
     }
     .goodsList {
@@ -689,7 +713,7 @@
       background-color: #fff;
       .goodsTable {
         td {
-          padding: 20px 0;
+          padding: 15px 0;
         }
         .el-table__body {
           border-left: 1px solid #ececec;
@@ -750,6 +774,9 @@
           p {
             line-height: 22px;
             color: #999999;
+          }
+          .agent-pro{
+            color: red;
           }
         }
       }

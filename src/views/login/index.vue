@@ -9,7 +9,7 @@
         label-position="left"
       >
         <div class="title-container">
-          <h3 class="title">系 统 运 营 管 理 平 台</h3>
+          <h3 class="title">商 户 运 营 管 理 平 台</h3>
         </div>
         <div class="content">
           <el-form-item prop="username">

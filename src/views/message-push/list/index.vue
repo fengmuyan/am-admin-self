@@ -24,7 +24,7 @@
               <el-option label="广告" value="1" />
             </el-select>
           </el-form-item>
-          <el-form-item label="消息级别" prop="level">
+          <el-form-item label="正文类型" prop="level">
             <el-select
               v-model="queryForm.level"
               placeholder="请选择"
@@ -32,8 +32,8 @@
               size="small"
               style="width: 180px"
             >
-              <el-option label="普通消息内容" value="0" />
-              <el-option label="URL消息内容" value="1" />
+              <el-option label="普通" value="0" />
+              <el-option label="URL" value="1" />
             </el-select>
           </el-form-item>
           <el-form-item label="推送状态" prop="ispushed">
@@ -88,27 +88,27 @@
         </el-col>
       </el-row>
       <el-table style="width: 100%" v-loading="loading" :data="messageList">
-        <el-table-column label="消息编号" prop="guid" width="150px" show-overflow-tooltip />
+        <el-table-column label="消息编号" prop="guid" width="130px" show-overflow-tooltip />
+        <el-table-column label="分类标题" prop="subject" width="160px" show-overflow-tooltip />
         <el-table-column label="消息标题" prop="title" show-overflow-tooltip />
-        <el-table-column label="消息级别" prop="level" width="100px">
+        <el-table-column label="正文类型" prop="level" width="80px">
           <template slot-scope="scope">{{scope.row.level | initLevel }}</template>
         </el-table-column>
-        <el-table-column label="消息内容" prop="content" show-overflow-tooltip />
-        <el-table-column label="消息类型" prop="messagetype" width="100px">
+        <el-table-column label="消息类型" prop="messagetype" width="80px">
           <template slot-scope="scope">{{scope.row.messagetype | initMessageType }}</template>
         </el-table-column>
-        <el-table-column label="开始推送时间" prop="pushtime" width="150px" />
-        <el-table-column label="推送状态" prop="state" width="100px">
+        <el-table-column label="开始推送时间" prop="pushtime" width="170px" />
+        <el-table-column label="推送状态" prop="state" width="80px">
           <template slot-scope="scope">{{scope.row.ispushed | initState }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="300px">
+        <el-table-column label="操作" width="270px">
           <template slot-scope="scope">
             <el-button
               size="mini"
               type="text"
               icon="el-icon-chat-line-square"
               @click="handleDetail(scope.row)"
-            >消息明细</el-button>
+            >详情</el-button>
             <el-button size="mini" type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
             <el-button
               size="mini"
@@ -135,7 +135,7 @@
     </div>
 
     <!-- 添加或修改消息对话框 -->
-    <el-dialog :title="title" :visible.sync="open" width="780px">
+    <el-dialog :title="title" :visible.sync="open" @close="clearValidate" width="780px">
       <el-form ref="form" :model="form" :rules="rules" :inline="true" label-width="110px">
         <el-form-item label="图标上传" prop="icon" ref="uploadElement" v-if="imgShow">
           <upload-img
@@ -161,10 +161,10 @@
         >
           <el-input v-model="form.url" style="width:573px" placeholder="请输入外链URL"></el-input>
         </el-form-item>
-        <el-form-item label="消息级别" prop="level">
-          <el-select v-model="form.level" placeholder="请选择消息级别">
-            <el-option label="普通消息内容" value="0" />
-            <el-option label="URL消息内容" value="1" />
+        <el-form-item label="正文类型" prop="level">
+          <el-select v-model="form.level" placeholder="请选择正文类型">
+            <el-option label="普通" value="0" />
+            <el-option label="URL" value="1" />
           </el-select>
         </el-form-item>
         <el-form-item
@@ -192,7 +192,7 @@
           </el-select>
         </el-form-item>
         <el-form-item label="消息来源" prop="fromtype">
-          <el-select v-model="form.fromtype" placeholder="请选择消息类型">
+          <el-select v-model="form.fromtype" placeholder="请选择消息来源">
             <el-option label="商户" value="0" />
             <el-option label="平台" value="1" />
           </el-select>
@@ -220,23 +220,7 @@
       </div>
     </el-dialog>
 
-    <el-dialog title="消息推送" :visible.sync="openPush" width="600px">
-      <div class="table-p table-push" style="min-height:400px">
-        <el-table style="width: 100%" :data="userList">
-          <el-table-column label="标识" prop="id" show-overflow-tooltip />
-          <el-table-column label="用户手机号" prop="phone" show-overflow-tooltip />
-          <el-table-column label="操作">
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                type="text"
-                icon="el-icon-delete"
-                @click="handleDelUser(scope.row)"
-              >删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
-      </div>
+    <el-dialog title="消息推送" :visible.sync="openPush" @close="clearPushValidate" width="600px">
       <el-form
         ref="pushForm"
         :model="pushForm"
@@ -244,18 +228,47 @@
         :inline="true"
         label-width="110px"
       >
-        <el-form-item label="推送用户" prop="pushUsers">
-          <el-input
-            v-model="pushForm.pushUsers"
-            placeholder="请输入用户手机号"
-            clearable
-            size="small"
-            maxlength="11"
-            style="width: 220px"
-          />
-          <el-button style="margin-left:5px" type="primary" size="mini" @click="addUser('pushForm')">添加用户</el-button>
-          <el-button style="margin-left:15px" type="primary" size="mini" @click="">导入用户</el-button>
+        <el-form-item label="推送类型" prop="isAllPush">
+          <el-radio-group v-model="pushForm.isAllPush">
+            <el-radio :label="0">全部推送</el-radio>
+            <el-radio :label="1">部分推送</el-radio>
+          </el-radio-group>
         </el-form-item>
+        <div v-if="pushForm.isAllPush === 1">
+          <div class="table-p table-push" style="min-height:400px">
+            <el-table style="width: 100%" :data="userList">
+              <el-table-column label="标识" prop="id" show-overflow-tooltip />
+              <el-table-column label="用户手机号" prop="phone" show-overflow-tooltip />
+              <el-table-column label="操作">
+                <template slot-scope="scope">
+                  <el-button
+                    size="mini"
+                    type="text"
+                    icon="el-icon-delete"
+                    @click="handleDelUser(scope.row)"
+                  >删除</el-button>
+                </template>
+              </el-table-column>
+            </el-table>
+          </div>
+          <el-form-item label="推送用户" prop="pushUsers">
+            <el-input
+              v-model="pushForm.pushUsers"
+              placeholder="请输入用户手机号"
+              clearable
+              size="small"
+              maxlength="11"
+              style="width: 220px"
+            />
+            <el-button
+              style="margin-left:5px"
+              type="primary"
+              size="mini"
+              @click="addUser('pushForm')"
+            >添加用户</el-button>
+            <el-button style="margin-left:15px" type="primary" size="mini" @click>导入用户</el-button>
+          </el-form-item>
+        </div>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancelPush">取 消</el-button>
@@ -337,7 +350,7 @@ export default {
           { required: true, message: "请输入消息内容", trigger: "blur" }
         ],
         level: [
-          { required: true, message: "请选择消息级别", trigger: "change" }
+          { required: true, message: "请选择正文类型", trigger: "change" }
         ],
         platform: [
           { required: true, message: "请选择推送平台", trigger: "change" }
@@ -346,7 +359,7 @@ export default {
           { required: true, message: "请选择消息类型", trigger: "change" }
         ],
         fromtype: [
-          { required: true, message: "请选择消息来源", trigger: "change" }
+          { required: true, message: "请选择正文类型", trigger: "change" }
         ],
         isdisplay: [
           { required: true, message: "请选择是否列表展示", trigger: "change" }
@@ -354,16 +367,22 @@ export default {
       },
       pushForm: {
         guid: undefined,
+        isAllPush: 0,
         pushUsers: []
       },
       rulesPush: {
-        pushUsers: [{ validator: validateTel, required: true, trigger: "blur" }]
+        pushUsers: [
+          { validator: validateTel, required: true, trigger: "blur" }
+        ],
+        isAllPush: [
+          { required: true, message: "请选择推送类型", trigger: "change" }
+        ]
       }
     };
   },
   filters: {
     initLevel(val) {
-      const arr = ["普通消息内容", "URL消息内容"];
+      const arr = ["普通", "URL"];
       return arr[val];
     },
     initMessageType(val) {
@@ -497,6 +516,12 @@ export default {
     cancelPush() {
       this.openPush = false;
     },
+    clearValidate() {
+      this.$refs.form.resetFields();
+    },
+    clearPushValidate() {
+      this.$refs.pushForm.resetFields();
+    },
     handleDel(item) {
       this.$confirm("确定要删除吗？", "系统提示", {
         confirmButtonText: "确定",
@@ -538,40 +563,58 @@ export default {
       this.pushForm.guid = item.guid;
       this.openPush = true;
     },
-    async submitPushForm() {
-      if (this.userList.length === 0) {
-        this.$confirm("推送用户不能为空", "系统提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-          customClass: "el-message-box-wran"
-        })
-          .then(async () => {})
-          .catch(err => {});
-      } else {
-        this.$confirm("确定要推送给这些用户吗？", "系统提示", {
+    submitPushForm() {
+      const { guid, isAllPush } = this.pushForm;
+      if (isAllPush === 0) {
+        this.$confirm("确定要给全部用户推送吗？", "系统提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
           customClass: "el-message-box-wran"
         })
           .then(async () => {
-            try {
-              const { code } = await handleMessagePush({
-                guid: this.pushForm.guid,
-                pushUsers: this.userList.map(item => item.phone).join(",")
-              });
-              this.loading = false;
-              if (code === 200) {
-                this.msgSuccess("推送成功");
-                this.openPush = false;
-              }
-            } catch (err) {
-              this.loading = false;
-              console.log(err);
-            }
+            this.submitPushFormAc({ guid, isAllPush });
           })
           .catch(err => {});
+      } else if (isAllPush === 1) {
+        if (this.userList.length === 0) {
+          this.$confirm("推送用户不能为空", "系统提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+            customClass: "el-message-box-wran"
+          })
+            .then(async () => {})
+            .catch(err => {});
+        } else {
+          this.$confirm("确定要给这些用户推送吗？", "系统提示", {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+            customClass: "el-message-box-wran"
+          })
+            .then(async () => {
+              this.submitPushFormAc({
+                guid,
+                isAllPush,
+                pushUsers: this.userList.map(item => item.phone).join(",")
+              });
+            })
+            .catch(err => {});
+        }
+      }
+    },
+    async submitPushFormAc(data) {
+      try {
+        const { code } = await handleMessagePush(data);
+        this.loading = false;
+        if (code === 200) {
+          this.msgSuccess("推送成功");
+          this.openPush = false;
+        }
+      } catch (err) {
+        this.loading = false;
+        console.log(err);
       }
     },
     addUser(formName) {
@@ -590,7 +633,7 @@ export default {
       });
     },
     handleDelUser(data) {
-      const idx = this.userList.find(item => item.id === data.id);
+      const idx = this.userList.findIndex(item => item.id === data.id);
       this.userList.splice(idx, 1);
     },
     _initParams(obj) {

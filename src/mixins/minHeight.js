@@ -23,7 +23,7 @@ const mixin = {
   },
   methods: {
     resize() {
-      this.elementHeight = '60px'
+      this.elementHeight = undefined;
     }
   }
 }
