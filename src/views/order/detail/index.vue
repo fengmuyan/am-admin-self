@@ -108,7 +108,9 @@
           <el-table-column label="单价" prop="cmdtprice" />
           <el-table-column label="数量" prop="cmdtcount" />
           <el-table-column label="优惠" prop="couponprice" />
-          <el-table-column label="折扣" prop="discount" />
+          <el-table-column label="折扣" prop="discount">
+            <template slot-scope="scope">{{scope.row.discount | initDiscount}}</template>
+          </el-table-column>
           <el-table-column label="总价" prop="cmdttotalprice" />
           <el-table-column label="状态" width="200px">
             <template slot-scope="scope">
@@ -269,6 +271,14 @@ export default {
     initInvoce(type) {
       const arr = ["", "普通发票", "增值税发票"];
       return arr[type];
+    },
+    initDiscount(val) {
+      if (!val) return "";
+      if (val === 1) {
+        return "无折扣";
+      } else {
+        return `${Number(val) * 100}折`;
+      }
     }
   },
   computed: {

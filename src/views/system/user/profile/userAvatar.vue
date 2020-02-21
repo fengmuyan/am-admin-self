@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img v-bind:src="options.img" @click="editCropper()" title="点击上传头像" class="img-circle img-lg" />
+    <img v-bind:src="imgUrl" @click="editCropper()" title="点击上传头像" class="img-circle img-lg" />
     <el-dialog :title="title" :visible.sync="open" width="800px">
       <el-row>
         <el-col :xs="24" :md="12" :style="{height: '350px'}">
@@ -48,7 +48,7 @@
           <el-button icon="el-icon-refresh-right" size="small" @click="rotateRight()"></el-button>
         </el-col>
         <el-col :lg="{span: 2, offset: 6}" :md="2">
-          <el-button type="primary" size="small" @click="uploadImg()">上 传</el-button>
+          <el-button :loading="loading" type="primary" size="small" @click="uploadImg()">上传提交</el-button>
         </el-col>
       </el-row>
     </el-dialog>
@@ -69,10 +69,12 @@ export default {
   },
   data() {
     return {
+      loading: false,
       // 是否显示弹出层
       open: false,
       // 弹出层标题
       title: "修改头像",
+      imgUrl: store.getters.avatar,
       options: {
         img: store.getters.avatar, //裁剪图片的地址
         autoCrop: true, // 是否默认生成截图框
@@ -116,20 +118,28 @@ export default {
     // 上传图片
     uploadImg() {
       this.$refs.cropper.getCropBlob(data => {
+        this.loading = true;
         let formData = new FormData();
         formData.append("avatarfile", data);
         uploadAvatar(formData).then(response => {
           if (response.code === 200) {
+            this.loading = false;
             this.open = false;
-            this.options.img = process.env.VUE_APP_BASE_API + response.imgUrl;
-            this.msgSuccess("修改成功");
+            this.imgUrl = process.env.VUE_APP_BASE_API + response.imgUrl;
+            this.$store
+            .dispatch("setAvatar", process.env.VUE_APP_BASE_API + response.imgUrl)
+            .then(() => {
+              this.msgSuccess("修改成功");
+            })
           } else {
+            this.loading = false;
             this.msgError(response.msg);
           }
           this.$refs.cropper.clearCrop();
         });
       });
     },
+
     // 实时预览
     realTime(data) {
       this.previews = data;

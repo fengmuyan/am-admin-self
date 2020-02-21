@@ -3,8 +3,9 @@
 </template>
 
 <script>
+import echarts from 'echarts'
 import echartTheme from "@/utils/echart.js";
-import resize from "./mixins/resize";
+import resize from './mixins/resize'
 
 export default {
   mixins: [resize],

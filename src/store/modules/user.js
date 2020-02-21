@@ -116,6 +116,13 @@ const user = {
         resolve()
       })
     },
+
+    setAvatar({ commit }, url) {
+      return new Promise(resolve => {
+        commit('SET_AVATAR', url)
+        resolve()
+      })
+    },
   }
 }
 

@@ -3,9 +3,13 @@ import '@/assets/styles/index.scss'
 import '@/assets/el-style/index.css'
 import '@/assets/styles/am.scss'
 import '@/assets/styles/private.scss'
+import Vue from 'vue'
+import Cookies from 'js-cookie'
+
 import App from './App'
 import store from './store'
 import router from './router'
+import Element from 'element-ui'
 import permission from './directive/permission'
 import throttle from './directive/throttle'
 import resize from './directive/resize'
@@ -37,9 +41,10 @@ Vue.prototype.msgInfo = function (msg) {
 }
 
 // 全局组件挂载
-Vue.component('Treeselect', VueTreeselect.Treeselect)
 Vue.component('Pagination', Pagination)
-
+Vue.use(Element, {
+  size: Cookies.get('size') || 'medium'
+})
 Vue.use(permission)
 Vue.use(throttle)
 Vue.use(resize)

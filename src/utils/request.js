@@ -1,4 +1,6 @@
+import axios from 'axios'
 import store from '@/store'
+import { MessageBox } from 'element-ui'
 import { getToken } from '@/utils/auth'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
@@ -29,7 +31,7 @@ service.interceptors.response.use(res => {
   if (code === 401) {
     if (store.getters.tipAppeared === false) {
       store.dispatch('toggleTip', true).then(() => {
-        ELEMENT.MessageBox({
+        MessageBox({
           message: '登录状态已过期。',
           type: 'error',
           customClass: 'el-message-box-err',
@@ -47,7 +49,7 @@ service.interceptors.response.use(res => {
     }
 
   } else if (code !== 200) {
-    ELEMENT.MessageBox({
+    MessageBox({
       message: res.data.msg,
       type: 'error',
       duration: 5 * 1000,
@@ -60,7 +62,7 @@ service.interceptors.response.use(res => {
 },
   error => {
     console.log('err' + error)
-    ELEMENT.MessageBox({
+    MessageBox({
       message: error.message,
       type: 'error',
       duration: 5 * 1000,

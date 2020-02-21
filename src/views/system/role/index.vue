@@ -104,7 +104,8 @@
       <el-row :gutter="10" class="mb10 f-r icon-wrap">
         <el-col :span="1.5">
           <div class="icon-box icon-box-f" @click="formShow = !formShow">
-            <i class="el-icon-zoom-in"></i>
+            <i class="el-icon-zoom-in" v-show="!formShow"></i>
+            <i class="el-icon-zoom-out" v-if="formShow"></i>
           </div>
         </el-col>
         <el-col :span="1.5">
@@ -230,8 +231,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -267,8 +268,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitDataScope">确 定</el-button>
         <el-button @click="cancelDataScope">取 消</el-button>
+        <el-button type="primary" @click="submitDataScope">确 定</el-button>
       </div>
     </el-dialog>
   </div>

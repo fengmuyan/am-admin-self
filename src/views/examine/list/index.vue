@@ -58,7 +58,7 @@
         <el-table-column label="手机号" prop="phone" />
         <el-table-column label="创建时间" prop="voCreatetime" width="150px"/>
         <el-table-column label="审核状态" prop="state" width="100px">
-          <template slot-scope="scope">{{scope.row.state | initState }}</template>
+          <template slot-scope="scope"><span :class="{'warn-color':scope.row.state===2,'suc-color':scope.row.state===3}">{{scope.row.state | initState }}</span></template>
         </el-table-column>
         <el-table-column label="操作" width="100px">
           <template slot-scope="scope">
@@ -145,7 +145,7 @@ export default {
       this.$router.push({ path });
     },
     _initParams(obj) {
-      const dateRange = this.dateRange;
+      const dateRange = this.dateRange || [];
       Object.assign(obj, {
         beginTime: dateRange.length > 0 ? dateRange[0] : null,
         endTime: dateRange.length > 0 ? dateRange[1] : null

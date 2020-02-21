@@ -186,6 +186,7 @@ export default {
     return {
       loading: false,
       formShow: true,
+      exportLoading: false,
       activeName: "-1",
       orderList: [],
       total: 0,
@@ -306,7 +307,8 @@ export default {
         .catch(function() {});
     },
     _initParams(obj) {
-      const { dateRange, activeName } = this;
+      const activeName = this.activeName;
+      const dateRange = this.dateRange || [];
       Object.assign(obj, {
         tradestate: activeName === "-1" ? null : activeName,
         beginTime: dateRange.length > 0 ? dateRange[0] : null,

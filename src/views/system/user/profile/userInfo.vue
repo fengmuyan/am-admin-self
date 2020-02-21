@@ -16,7 +16,7 @@
       </el-radio-group>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" size="mini" @click="submit">保存</el-button>
+      <el-button type="primary" :loading="loading" size="mini" @click="submit">保存</el-button>
       <el-button type="danger" size="mini" @click="close">关闭</el-button>
     </el-form-item>
   </el-form>
@@ -54,19 +54,24 @@ export default {
             trigger: "blur"
           }
         ]
-      }
+      },
+      loading: false
     };
   },
   methods: {
     submit() {
       this.$refs["form"].validate(valid => {
         if (valid) {
+          this.loading = true;
           updateUserProfile(this.user).then(response => {
+            this.loading = false;
             if (response.code === 200) {
               this.msgSuccess("修改成功");
             } else {
               this.msgError(response.msg);
             }
+          }).catch(err=>{
+            this.loading = false;
           });
         }
       });

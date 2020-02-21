@@ -20,7 +20,7 @@
       <div class="card-panel card-panel03" @click="handleSetLineChartData('topThi')">
         <div class="card-panel-description">
           <div class="card-panel-text">信用额度付款</div>
-          <count-to :start-val="0" :end-val="itemData[2]" decimals="2" :duration="2000" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="itemData[2]" :decimals="2" :duration="2000" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -38,7 +38,7 @@
               slot="reference"
               :start-val="0"
               :end-val="itemData[3]"
-              decimals="2"
+              :decimals="2"
               :duration="2000"
               class="card-panel-num"
             />

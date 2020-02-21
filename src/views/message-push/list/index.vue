@@ -88,8 +88,18 @@
         </el-col>
       </el-row>
       <el-table style="width: 100%" v-loading="loading" :data="messageList">
-        <el-table-column label="消息编号" prop="guid" width="130px" show-overflow-tooltip />
-        <el-table-column label="分类标题" prop="subject" width="160px" show-overflow-tooltip />
+        <el-table-column label="分类标题" prop="subject" width="130px" show-overflow-tooltip />
+        <el-table-column label="icon" prop="icon" width="80px" show-overflow-tooltip>
+          <template slot-scope="scope">
+            <div class="demo-image__preview img-box">
+              <el-image
+                style="width: 40px; height: 40px"
+                :src="scope.row.icon"
+                :preview-src-list="[scope.row.icon]"
+              ></el-image>
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="消息标题" prop="title" show-overflow-tooltip />
         <el-table-column label="正文类型" prop="level" width="80px">
           <template slot-scope="scope">{{scope.row.level | initLevel }}</template>
@@ -97,11 +107,11 @@
         <el-table-column label="消息类型" prop="messagetype" width="80px">
           <template slot-scope="scope">{{scope.row.messagetype | initMessageType }}</template>
         </el-table-column>
-        <el-table-column label="开始推送时间" prop="pushtime" width="170px" />
+        <el-table-column label="开始推送时间" prop="pushtime" width="150px" />
         <el-table-column label="推送状态" prop="state" width="80px">
           <template slot-scope="scope">{{scope.row.ispushed | initState }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="270px">
+        <el-table-column label="操作" width="250px">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -637,7 +647,7 @@ export default {
       this.userList.splice(idx, 1);
     },
     _initParams(obj) {
-      const dateRange = this.dateRange;
+      const dateRange = this.dateRange || [];
       Object.assign(obj, {
         beginPushtime: dateRange.length > 0 ? dateRange[0] : undefined,
         endPushtime: dateRange.length > 0 ? dateRange[1] : undefined

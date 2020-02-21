@@ -132,7 +132,8 @@
           <el-row :gutter="10" class="mb10 f-r icon-wrap">
             <el-col :span="1.5">
               <div class="icon-box icon-box-f" @click="formShow = !formShow">
-                <i class="el-icon-zoom-in"></i>
+                <i class="el-icon-zoom-in" v-show="!formShow"></i>
+                <i class="el-icon-zoom-out" v-if="formShow"></i>
               </div>
             </el-col>
             <el-col :span="1.5">
@@ -218,23 +219,33 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="归属部门" prop="deptId">
+              <treeselect v-model="form.deptId" :options="deptOptions" placeholder="请选择归属部门" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="手机号码" prop="phonenumber">
-              <el-input v-model="form.phonenumber" placeholder="请输入手机号码" :disabled="form.userId !== undefined" maxlength="11" />
+              <el-input v-model="form.phonenumber" placeholder="请输入手机号码" maxlength="11" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item label="用户账号" prop="userName">
-              <el-input v-model="form.userName" placeholder="请输入用户名称" :disabled="form.userId !== undefined"/>
+            <el-form-item label="邮箱" prop="email">
+              <el-input v-model="form.email" placeholder="请输入邮箱" maxlength="50" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
-            <el-form-item v-if="form.userId === undefined" label="用户密码" prop="password">
+            <el-form-item label="用户名称" prop="userName">
+              <el-input v-model="form.userName" placeholder="请输入用户名称" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="form.userId == undefined" label="用户密码" prop="password">
               <el-input v-model="form.password" placeholder="请输入用户密码" type="password" />
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="用户性别">
-              <el-select v-model="form.sex" placeholder="请选择" style="width:216px">
+              <el-select v-model="form.sex" placeholder="请选择">
                 <el-option
                   v-for="dict in sexOptions"
                   :key="dict.dictValue"
@@ -245,8 +256,33 @@
             </el-form-item>
           </el-col>
           <el-col :span="12">
+            <el-form-item label="状态">
+              <el-radio-group v-model="form.status">
+                <el-radio
+                  v-for="dict in statusOptions"
+                  :key="dict.dictValue"
+                  :label="dict.dictValue"
+                >{{dict.dictLabel}}</el-radio>
+              </el-radio-group>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <el-form-item label="岗位">
+              <el-select v-model="form.postIds" multiple placeholder="请选择">
+                <el-option
+                  v-for="item in postOptions"
+                  :key="item.postId"
+                  :label="item.postName"
+                  :value="item.postId"
+                  :disabled="item.status == 1"
+                ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
             <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择" style="width:216px">
+              <el-select v-model="form.roleIds" multiple placeholder="请选择">
                 <el-option
                   v-for="item in roleOptions"
                   :key="item.roleId"
@@ -265,8 +301,8 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="submitForm">确 定</el-button>
         <el-button @click="cancel">取 消</el-button>
+        <el-button type="primary" @click="submitForm">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -286,8 +322,11 @@ import {
 import { treeselect } from "@/api/system/dept";
 import { listPost } from "@/api/system/post";
 import { listRole } from "@/api/system/role";
+import Treeselect from "@riophae/vue-treeselect";
+import "@riophae/vue-treeselect/dist/vue-treeselect.css";
 
 export default {
+  components: { Treeselect },
   data() {
     return {
       // 遮罩层
@@ -334,7 +373,8 @@ export default {
         pageSize: 10,
         userName: undefined,
         phonenumber: undefined,
-        status: undefined
+        status: undefined,
+        deptId: undefined
       },
       // 表单校验
       rules: {
@@ -344,12 +384,21 @@ export default {
         nickName: [
           { required: true, message: "用户昵称不能为空", trigger: "blur" }
         ],
+        deptId: [
+          { required: true, message: "归属部门不能为空", trigger: "blur" }
+        ],
         password: [
           { required: true, message: "用户密码不能为空", trigger: "blur" }
         ],
+        email: [
+          {
+            type: "email",
+            message: "'请输入正确的邮箱地址",
+            trigger: ["blur", "change"]
+          }
+        ],
         phonenumber: [
           {
-            required: true,
             pattern: /^1[3|4|5|6|7|8|9][0-9]\d{8}$/,
             message: "请输入正确的手机号码",
             trigger: "blur"
@@ -458,6 +507,7 @@ export default {
         sex: undefined,
         status: "0",
         remark: undefined,
+        postIds: [],
         roleIds: []
       };
       this.resetForm("form");
@@ -498,6 +548,7 @@ export default {
       const userId = row.userId || this.ids;
       getUser(userId).then(response => {
         this.form = response.data;
+        this.form.postIds = response.postIds;
         this.form.roleIds = response.roleIds;
         this.open = true;
         this.title = "修改用户";

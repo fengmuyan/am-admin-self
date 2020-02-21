@@ -408,7 +408,7 @@ export default {
       this.handleQuery();
     },
     _initParams(obj) {
-      const dateRange = this.dateRange;
+      const dateRange = this.dateRange || [];
       Object.assign(obj, {
         beginTime: dateRange.length > 0 ? dateRange[0] : null,
         endTime: dateRange.length > 0 ? dateRange[1] : null

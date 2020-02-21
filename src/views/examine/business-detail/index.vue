@@ -21,7 +21,7 @@
         </h4>
         <el-form :model="baseForm" ref="baseForm" label-width="110px">
           <el-form-item label="认证状态" prop="state">
-            <span class="status">{{baseForm.state|initState}}</span>
+            <span :class="{status:true,'warn-color':baseForm.state===2,'suc-color':baseForm.state===3}">{{baseForm.state|initState}}</span>
           </el-form-item>
           <el-form-item label="用户类型" prop="quality" class="radio-item">
             <el-radio-group v-model="baseForm.registertype" style="width:400px" disabled>
