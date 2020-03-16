@@ -26,3 +26,15 @@ export function orderExport(data) {
     data
   })
 }
+
+//订单确认收货
+export function handelCnfirmReceipt(data) {
+  return request({
+    url: '/patronus/order/confirmReceipt',
+    method: 'post',
+    data
+  })
+}
+
+
+

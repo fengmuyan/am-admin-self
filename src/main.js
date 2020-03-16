@@ -3,6 +3,8 @@ import '@/assets/styles/index.scss'
 import '@/assets/el-style/index.css'
 import '@/assets/styles/am.scss'
 import '@/assets/styles/private.scss'
+import '@/assets/styles/mobile.scss'
+
 import Vue from 'vue'
 import Cookies from 'js-cookie'
 

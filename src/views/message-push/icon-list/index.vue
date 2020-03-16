@@ -15,18 +15,19 @@
       </el-row>
       <el-table style="width: 100%" v-loading="loading" :data="iconList">
         <el-table-column label="编号" prop="uid" width="130px" />
-        <el-table-column label="图标" prop="icon" show-overflow-tooltip>
+        <el-table-column label="图标" prop="url" show-overflow-tooltip>
           <template slot-scope="scope">
             <div class="demo-image__preview img-box">
               <el-image
                 style="width: 40px; height: 40px"
-                :src="scope.row.icon"
-                :preview-src-list="[scope.row.icon]"
+                :src="scope.row.url"
+                :preview-src-list="[scope.row.url]"
               ></el-image>
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="图标名称" prop="subject" />
+        <el-table-column label="图标名称" prop="iconname" />
+        <el-table-column label="创建时间" prop="createtime" />
         <el-table-column label="操作">
           <template slot-scope="scope">
             <el-button size="mini" type="text" icon="el-icon-edit" @click="handleEdit(scope.row)">修改</el-button>
@@ -60,8 +61,8 @@
             v-model="form.icon"
           ></upload-img>
         </el-form-item>
-        <el-form-item label="图标名称" prop="title">
-          <el-input v-model="form.title" style="width:330px" placeholder="请输入图标名称"></el-input>
+        <el-form-item label="图标名称" prop="iconname">
+          <el-input v-model="form.iconname" style="width:330px" placeholder="请输入图标名称"></el-input>
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
@@ -73,10 +74,9 @@
 </template>
 <script>
 import {
-  getMessageList,
-  handleMessageEdit,
-  handleMessageDel,
-  handleMessagePush
+  getMessageIconList,
+  handleMessageIconEdit,
+  handleMessageIconDel
 } from "@/api/message";
 import UploadImg from "@/components/UploadImg";
 import minHeightMix from "@/mixins/minHeight";
@@ -99,31 +99,19 @@ export default {
         pageSize: 10
       },
       form: {
-        icon: null
+        uid: undefined,
+        icon: null,
+        iconname: undefined
       },
       rules: {
         icon: [
           { required: true, message: "上传图标不能为空", trigger: "blur" }
         ],
-        title: [
+        iconname: [
           { required: true, message: "图标名称不能为空", trigger: "blur" }
         ]
       }
     };
-  },
-  filters: {
-    initLevel(val) {
-      const arr = ["普通", "URL"];
-      return arr[val];
-    },
-    initMessageType(val) {
-      const arr = ["通知 ", "广告"];
-      return arr[val];
-    },
-    initState(val) {
-      const arr = ["未推送", "已推送"];
-      return arr[val];
-    }
   },
   created() {
     this.getList();
@@ -135,7 +123,7 @@ export default {
         const {
           code,
           data: { content, totalSize }
-        } = await getMessageList(this.queryForm);
+        } = await getMessageIconList(this.queryForm);
         this.loading = false;
         if (code === 200) {
           this.iconList = content;
@@ -155,47 +143,29 @@ export default {
       this.resetForm("queryForm");
       this.handleQuery();
     },
-    resetMessageForm() {
+    resetMessageIconForm() {
       Object.assign(this.form, {
-        guid: undefined,
-        icon: null,
-        subject: undefined,
-        title: undefined,
-        url: "",
-        level: "0",
-        actioncode: "100701",
-        platform: "all",
-        messagetype: "0",
-        fromtype: "1",
-        isdisplay: "Y",
-        content: undefined
+        uid: undefined,
+        iconname: undefined,
+        icon: null
       });
     },
     async handleAdd() {
       this.imgShow = false;
-      this.resetMessageForm();
-      this.title = "新增消息";
+      this.resetMessageIconForm();
+      this.title = "新增图标";
       await this.$nextTick();
       this.open = true;
       this.imgShow = true;
     },
     async handleEdit(item) {
       this.imgShow = false;
-      this.resetMessageForm();
-      this.title = "修改消息";
+      this.resetMessageIconForm();
+      this.title = "修改图标";
       Object.assign(this.form, {
-        guid: item.guid,
-        icon: item.icon,
-        subject: item.subject,
-        title: item.title,
-        url: item.url,
-        level: String(item.level),
-        actioncode: item.actioncode,
-        platform: item.platform,
-        messagetype: String(item.messagetype),
-        fromtype: String(item.fromtype),
-        isdisplay: item.isdisplay,
-        content: item.content
+        uid: item.uid,
+        icon: item.url,
+        iconname: item.iconname
       });
       await this.$nextTick();
       this.open = true;
@@ -205,20 +175,11 @@ export default {
       this.$refs[formName].validate(async valid => {
         if (valid) {
           let formData = new FormData();
-          if (this.form.guid !== undefined) {
-            formData.append("guid", this.form.guid);
+          if (this.form.uid !== undefined) {
+            formData.append("uid", this.form.uid);
           }
           formData.append("icon", this.$refs.imgItemOne.fileList[0]);
-          formData.append("subject", this.form.subject);
-          formData.append("title", this.form.title);
-          formData.append("url", this.form.url);
-          formData.append("level", this.form.level);
-          formData.append("actioncode", this.form.actioncode);
-          formData.append("platform", this.form.platform);
-          formData.append("messagetype", this.form.messagetype);
-          formData.append("fromtype", this.form.fromtype);
-          formData.append("isdisplay", this.form.isdisplay);
-          formData.append("content", this.form.content);
+          formData.append("iconname", this.form.iconname);
           this.subData(formData);
         } else {
           return false;
@@ -228,7 +189,7 @@ export default {
     async subData(formData) {
       try {
         this.loadingForm = true;
-        const { code } = await handleMessageEdit(formData);
+        const { code } = await handleMessageIconEdit(formData);
         this.loadingForm = false;
         this.open = false;
         if (code === 200) {
@@ -243,14 +204,8 @@ export default {
     cancel() {
       this.open = false;
     },
-    cancelPush() {
-      this.openPush = false;
-    },
     clearValidate() {
       this.$refs.form.resetFields();
-    },
-    clearPushValidate() {
-      this.$refs.pushForm.resetFields();
     },
     handleDel(item) {
       this.$confirm("确定要删除吗？", "系统提示", {
@@ -261,7 +216,7 @@ export default {
       })
         .then(async () => {
           try {
-            const { code } = await handleMessageDel({ guid: item.guid });
+            const { code } = await handleMessageIconDel({ uid: item.uid });
             this.loading = false;
             if (code === 200) {
               this.msgSuccess("删除成功");
@@ -280,11 +235,6 @@ export default {
     },
     delItemFir(val) {
       this.form.icon = null;
-    },
-    handleDetail(item) {
-      this.$router.push({
-        path: `/message-push/detail/${item.guid}`
-      });
     }
   }
 };

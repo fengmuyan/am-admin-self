@@ -146,84 +146,96 @@
 
     <!-- 添加或修改消息对话框 -->
     <el-dialog :title="title" :visible.sync="open" @close="clearValidate" width="780px">
-      <el-form ref="form" :model="form" :rules="rules" :inline="true" label-width="110px">
-        <el-form-item label="图标上传" prop="icon" ref="uploadElement" v-if="imgShow">
-          <upload-img
-            @add-item="addItemFir"
-            @del-item="delItemFir"
-            :file="form.icon?[{uid:0,url:form.icon}]:[null]"
-            ref="imgItemOne"
-            v-model="form.icon"
-          ></upload-img>
-        </el-form-item>
-        <el-form-item label="分类主题" prop="subject">
-          <el-input v-model="form.subject" style="width:573px" placeholder="请输入分类主题"></el-input>
-        </el-form-item>
-        <el-form-item label="消息标题" prop="title">
-          <el-input v-model="form.title" style="width:573px" placeholder="请输入消息标题"></el-input>
-        </el-form-item>
-        <el-form-item
-          label="外链URL"
-          prop="url"
-          :rules="{
+      <div v-loading="loadingEditShow" style="min-height:528px">
+        <el-form
+          ref="form"
+          :model="form"
+          :rules="rules"
+          :inline="true"
+          label-width="110px"
+          v-if="isMessageShow"
+        >
+          <el-form-item label="图标上传" prop="icon">
+            <el-select v-model="form.icon" placeholder="请选择图标名称">
+              <el-option
+                v-for="(item,index) in iconList"
+                :key="index"
+                :label="item.iconname"
+                :value="item.url"
+              >
+                <span style="float: left">{{ item.iconname }}</span>
+                <img style="float: right;height:30px" :src="item.url" />
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="分类主题" prop="subject">
+            <el-input v-model="form.subject" style="width:573px" placeholder="请输入分类主题"></el-input>
+          </el-form-item>
+          <el-form-item label="消息标题" prop="title">
+            <el-input v-model="form.title" style="width:573px" placeholder="请输入消息标题"></el-input>
+          </el-form-item>
+          <el-form-item
+            label="外链URL"
+            prop="url"
+            :rules="{
             required: this.form.level==='1', message: '外链URL不能为空', trigger: 'blur'
           }"
-        >
-          <el-input v-model="form.url" style="width:573px" placeholder="请输入外链URL"></el-input>
-        </el-form-item>
-        <el-form-item label="正文类型" prop="level">
-          <el-select v-model="form.level" placeholder="请选择正文类型">
-            <el-option label="普通" value="0" />
-            <el-option label="URL" value="1" />
-          </el-select>
-        </el-form-item>
-        <el-form-item
-          label="接口名称"
-          prop="actioncode"
-          :rules="{
+          >
+            <el-input v-model="form.url" style="width:573px" placeholder="请输入外链URL"></el-input>
+          </el-form-item>
+          <el-form-item label="正文类型" prop="level">
+            <el-select v-model="form.level" placeholder="请选择正文类型">
+              <el-option label="普通" value="0" />
+              <el-option label="URL" value="1" />
+            </el-select>
+          </el-form-item>
+          <el-form-item
+            label="接口名称"
+            prop="actioncode"
+            :rules="{
             required: this.form.level==='0', message: '接口名称不能为空', trigger: 'change'
           }"
-        >
-          <el-select v-model="form.actioncode" placeholder="请选择接口名称">
-            <el-option label="消息详情" value="100701" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="推送平台" prop="platform">
-          <el-select v-model="form.platform" placeholder="请选择推送平台">
-            <el-option label="全部" value="all" />
-            <el-option label="android" value="android" />
-            <el-option label="ios" value="ios" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="消息类型" prop="messagetype">
-          <el-select v-model="form.messagetype" placeholder="请选择消息类型">
-            <el-option label="通知" value="0" />
-            <el-option label="广告" value="1" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="消息来源" prop="fromtype">
-          <el-select v-model="form.fromtype" placeholder="请选择消息来源">
-            <el-option label="商户" value="0" />
-            <el-option label="平台" value="1" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="是否列表展示" prop="isdisplay">
-          <el-select v-model="form.isdisplay" placeholder="请选择是否列表展示">
-            <el-option label="展示" value="Y" />
-            <el-option label="不展示" value="N" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="消息内容" prop="content">
-          <el-input
-            type="textarea"
-            v-model="form.content"
-            placeholder="请输入消息内容"
-            maxlength="150"
-            show-word-limit
-            style="width:573px"
-          ></el-input>
-        </el-form-item>
-      </el-form>
+          >
+            <el-select v-model="form.actioncode" placeholder="请选择接口名称">
+              <el-option label="消息详情" value="100701" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="推送平台" prop="platform">
+            <el-select v-model="form.platform" placeholder="请选择推送平台">
+              <el-option label="全部" value="all" />
+              <el-option label="android" value="android" />
+              <el-option label="ios" value="ios" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="消息类型" prop="messagetype">
+            <el-select v-model="form.messagetype" placeholder="请选择消息类型">
+              <el-option label="通知" value="0" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="消息来源" prop="fromtype">
+            <el-select v-model="form.fromtype" placeholder="请选择消息来源">
+              <el-option label="平台" value="1" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="是否列表展示" prop="isdisplay">
+            <el-select v-model="form.isdisplay" placeholder="请选择是否列表展示">
+              <el-option label="展示" value="Y" />
+              <el-option label="不展示" value="N" />
+            </el-select>
+          </el-form-item>
+          <el-form-item label="消息内容" prop="content">
+            <el-input
+              type="textarea"
+              v-model="form.content"
+              placeholder="请输入消息内容"
+              maxlength="150"
+              show-word-limit
+              style="width:573px"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="cancel">取 消</el-button>
         <el-button :loading="loadingForm" type="primary" @click="submitForm('form')">确 定</el-button>
@@ -276,7 +288,7 @@
               size="mini"
               @click="addUser('pushForm')"
             >添加用户</el-button>
-            <el-button style="margin-left:15px" type="primary" size="mini" @click>导入用户</el-button>
+            <el-button style="margin-left:15px" type="primary" size="mini">导入用户</el-button>
           </el-form-item>
         </div>
       </el-form>
@@ -292,15 +304,13 @@ import {
   getMessageList,
   handleMessageEdit,
   handleMessageDel,
-  handleMessagePush
+  handleMessagePush,
+  getMessageIconList,
+  getMessageIconAddList
 } from "@/api/message";
-import UploadImg from "@/components/UploadImg";
 import minHeightMix from "@/mixins/minHeight";
 export default {
   mixins: [minHeightMix],
-  components: {
-    UploadImg
-  },
   data() {
     const validateTel = (rule, value, callback) => {
       if (value === "") {
@@ -315,12 +325,14 @@ export default {
     return {
       loading: false,
       formShow: true,
-      imgShow: true,
       loadingForm: false,
       loadingPushForm: false,
+      loadingEditShow: false,
+      isMessageShow: false,
       messageList: [],
       userOptions: [],
       userList: [],
+      iconList: [],
       total: 0,
       dateRange: [],
       title: "新增消息",
@@ -336,7 +348,7 @@ export default {
       },
       form: {
         guid: undefined,
-        icon: null,
+        icon: undefined,
         subject: undefined,
         title: undefined,
         url: "",
@@ -349,9 +361,7 @@ export default {
         content: undefined
       },
       rules: {
-        icon: [
-          { required: true, message: "上传图标不能为空", trigger: "blur" }
-        ],
+        icon: [{ required: true, message: "图标不能为空", trigger: "blur" }],
         subject: [
           { required: true, message: "请输入分类主题", trigger: "blur" }
         ],
@@ -438,7 +448,7 @@ export default {
     resetMessageForm() {
       Object.assign(this.form, {
         guid: undefined,
-        icon: null,
+        icon: undefined,
         subject: undefined,
         title: undefined,
         url: "",
@@ -452,15 +462,23 @@ export default {
       });
     },
     async handleAdd() {
-      this.imgShow = false;
       this.resetMessageForm();
       this.title = "新增消息";
-      await this.$nextTick();
       this.open = true;
-      this.imgShow = true;
+      try {
+        this.loadingEditShow = true;
+        const { code, data } = await getMessageIconAddList();
+        this.loadingEditShow = false;
+        if (code === 200) {
+          this.iconList = data;
+          this.isMessageShow = true;
+        }
+      } catch (err) {
+        this.loadingEditShow = false;
+        console.log(err);
+      }
     },
     async handleEdit(item) {
-      this.imgShow = false;
       this.resetMessageForm();
       this.title = "修改消息";
       Object.assign(this.form, {
@@ -477,48 +495,40 @@ export default {
         isdisplay: item.isdisplay,
         content: item.content
       });
-      await this.$nextTick();
       this.open = true;
-      this.imgShow = true;
+      try {
+        this.loadingEditShow = true;
+        const { code, data } = await getMessageIconAddList();
+        this.loadingEditShow = false;
+        if (code === 200) {
+          this.iconList = data;
+          this.isMessageShow = true;
+        }
+      } catch (err) {
+        this.loadingEditShow = false;
+        console.log(err);
+      }
     },
     submitForm(formName) {
       this.$refs[formName].validate(async valid => {
         if (valid) {
-          let formData = new FormData();
-          if (this.form.guid !== undefined) {
-            formData.append("guid", this.form.guid);
+          try {
+            this.loadingForm = true;
+            const { code } = await handleMessageEdit(this.form);
+            this.loadingForm = false;
+            this.open = false;
+            if (code === 200) {
+              this.msgSuccess("操作成功");
+              this.getList();
+            }
+          } catch (err) {
+            this.loadingForm = false;
+            console.log(err);
           }
-          formData.append("icon", this.$refs.imgItemOne.fileList[0]);
-          formData.append("subject", this.form.subject);
-          formData.append("title", this.form.title);
-          formData.append("url", this.form.url);
-          formData.append("level", this.form.level);
-          formData.append("actioncode", this.form.actioncode);
-          formData.append("platform", this.form.platform);
-          formData.append("messagetype", this.form.messagetype);
-          formData.append("fromtype", this.form.fromtype);
-          formData.append("isdisplay", this.form.isdisplay);
-          formData.append("content", this.form.content);
-          this.subData(formData);
         } else {
           return false;
         }
       });
-    },
-    async subData(formData) {
-      try {
-        this.loadingForm = true;
-        const { code } = await handleMessageEdit(formData);
-        this.loadingForm = false;
-        this.open = false;
-        if (code === 200) {
-          this.msgSuccess("操作成功");
-          this.getList();
-        }
-      } catch (err) {
-        this.loadingForm = false;
-        console.log(err);
-      }
     },
     cancel() {
       this.open = false;
@@ -553,13 +563,6 @@ export default {
           }
         })
         .catch(err => {});
-    },
-    addItemFir(val) {
-      this.form.icon = val[0];
-      this.$refs["uploadElement"].clearValidate();
-    },
-    delItemFir(val) {
-      this.form.icon = null;
     },
     handleDetail(item) {
       this.$router.push({

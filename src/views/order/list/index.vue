@@ -156,7 +156,7 @@
         <el-table-column label="交易状态" prop="tradestate" width="120">
           <template slot-scope="scope">{{scope.row.tradestate | initTradestate}}</template>
         </el-table-column>
-        <el-table-column label="操作" width="80">
+        <el-table-column label="操作" width="150">
           <template slot-scope="scope">
             <el-button
               size="mini"
@@ -164,6 +164,13 @@
               icon="el-icon-edit"
               @click="handleDetail(scope.row)"
             >详情</el-button>
+            <el-button
+              v-if="Number(scope.row.tradestate)===2||Number(scope.row.tradestate)===3"
+              size="mini"
+              type="text"
+              icon="el-icon-box"
+              @click="handleConfirm(scope.row)"
+            >确认收货</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -178,8 +185,13 @@
   </div>
 </template>
 <script>
-import { getOrderList, orderExport, orderToSent } from "@/api/order";
-import minHeightMix from '@/mixins/minHeight'
+import {
+  getOrderList,
+  orderExport,
+  orderToSent,
+  handelCnfirmReceipt
+} from "@/api/order";
+import minHeightMix from "@/mixins/minHeight";
 export default {
   mixins: [minHeightMix],
   data() {
@@ -294,14 +306,39 @@ export default {
         customClass: "el-message-box-wran"
       })
         .then(async () => {
-          this.exportLoading = true;
-          const { msg, code } = await orderExport(_initParams(queryForm));
-          if (code === 200) {
-            this.download(msg);
-            this.msgSuccess("导出成功");
+          try {
+            this.exportLoading = true;
+            const { msg, code } = await orderExport(_initParams(queryForm));
             this.exportLoading = false;
-          } else {
+            if (code === 200) {
+              this.download(msg);
+              this.msgSuccess("导出成功");
+              this.exportLoading = false;
+            }
+          } catch (err) {
             this.exportLoading = false;
+            console.log(err);
+          }
+        })
+        .catch(function() {});
+    },
+    handleConfirm(item) {
+      const { usercode, orderno } = item;
+      this.$confirm("是否确认收货?", "警告", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        customClass: "el-message-box-wran"
+      })
+        .then(async () => {
+          try {
+            const { code } = await handelCnfirmReceipt({ usercode, orderno });
+            if (code === 200) {
+              this.msgSuccess("操作成功");
+              this.getList()
+            }
+          } catch (err) {
+            console.log(err);
           }
         })
         .catch(function() {});

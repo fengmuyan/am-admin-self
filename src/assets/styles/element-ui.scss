@@ -63,10 +63,12 @@
 .el-dropdown-menu {
   padding: 8px;
   padding-bottom: 0;
-  .el-checkbox{
+
+  .el-checkbox {
     display: block;
     margin-bottom: 10px;
   }
+
   a {
     display: block
   }
@@ -87,11 +89,13 @@
       text-align: center;
       transition: all .3s cubic-bezier(.645, .045, .355, 1);
       transform-origin: 100% 50%;
+
       &:before {
         transform: scale(.6);
         display: inline-block;
         vertical-align: -3px;
       }
+
       &:hover {
         background-color: #b4bccc;
         color: #fff;

@@ -282,7 +282,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="角色">
-              <el-select v-model="form.roleIds" multiple placeholder="请选择">
+              <el-select v-model="form.roleIds" multiple placeholder="请选择" style="width:215px">
                 <el-option
                   v-for="item in roleOptions"
                   :key="item.roleId"
@@ -290,6 +290,14 @@
                   :value="item.roleId"
                   :disabled="item.status == 1"
                 ></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item v-if="form.userId == undefined" label="客服选项" prop="isCreatekf">
+              <el-select v-model="form.isCreatekf" placeholder="请选择" style="width:215px">
+                <el-option label="分配" :value="true" />
+                <el-option label="不分配" :value="false" />
               </el-select>
             </el-form-item>
           </el-col>
@@ -389,6 +397,9 @@ export default {
         ],
         password: [
           { required: true, message: "用户密码不能为空", trigger: "blur" }
+        ],
+        isCreatekf: [
+          { required: true, message: "客服选项不能为空", trigger: "change" }
         ],
         email: [
           {
@@ -507,6 +518,7 @@ export default {
         sex: undefined,
         status: "0",
         remark: undefined,
+        isCreatekf: undefined,
         postIds: [],
         roleIds: []
       };
